@@ -1,0 +1,29 @@
+stages:
+  - install
+  - compile
+  - test
+
+image: maven:3.9.2-eclipse-temurin-17
+variables:
+  MAVEN_VERSION: "3.9.2"
+
+install:
+  stage: install
+  script: 
+    - 'mvn clean'
+    - 'mvn dependency:tree'
+    - 'mvn dependency:resolve'
+
+build:
+  stage: compile
+  script:
+    - 'mvn clean compile'
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
+
+test:
+  stage: test
+  script:
+    - 'mvn test'
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "push"
